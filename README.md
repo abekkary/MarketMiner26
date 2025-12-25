@@ -66,6 +66,6 @@ The application is built on **Python 3.12.9** for peak performance and modern sy
 * **Not Financial Advice:** The information, analysis, and AI-generated trends provided by this application do not constitute investment, financial, or trading advice. Users should consult with a qualified financial professional before making any investment decisions.
 * **Accuracy of Data:** While this app utilizes the Yahoo Finance API, EagleFins cannot guarantee the absolute accuracy, completeness, or timeliness of the market data provided.
 * **AI Limitations:** The TensorFlow-powered trend analysis is based on historical data patterns. Past performance is not an indicator of future results. AI models can produce "hallucinations" or incorrect predictions based on market anomalies, black swan events, or volatility.
-* **Risk of Loss:** Trading stocks and securities involves significant risk. You are solely responsible for any financial gains or losses incurred while using this software.
+* **Risk of Loss:** Trading stocks and securities involves significant risk. You are solely responsible for any financial gains or losses incurred while using this software!
 
 ---
