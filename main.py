@@ -1,3 +1,14 @@
+import sys
+import os
+
+# --- EXE CONSOLE FIX ---
+# This must remain at the very top to prevent 'NoneType has no attribute flush' 
+# errors when running as a windowed EXE without a terminal console.
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, "w")
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, "w")
+
 import customtkinter as ctk
 import yfinance as yf
 import pandas as pd
@@ -8,7 +19,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import threading
 import time
-import os
 from PIL import Image
 
 # Global variables for the heavy libraries to be assigned after loading
@@ -20,8 +30,14 @@ Input = None
 LambdaCallback = None
 EarlyStopping = None
 
-# --- PATH CONFIGURATION ---
-BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+# --- PATH CONFIGURATION (Fixed for PyInstaller Compatibility) ---
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle (EXE)
+    BASE_PATH = sys._MEIPASS
+else:
+    # If the application is run as a script
+    BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+
 ASSETS_PATH = os.path.join(BASE_PATH, "assets")
 
 # --- TOOLTIP HELPER CLASS ---
@@ -233,7 +249,7 @@ class StockForecasterApp(ctk.CTk):
         
         self.complexity_var = ctk.IntVar(value=2)
         self.complexity_slider = ctk.CTkSlider(self.sidebar, from_=1, to=5, number_of_steps=4, 
-                                              variable=self.complexity_var, command=self.draw_network_map)
+                                               variable=self.complexity_var, command=self.draw_network_map)
         self.complexity_slider.pack(pady=5)
         self.input_widgets.append(self.complexity_slider)
 
@@ -410,12 +426,19 @@ class StockForecasterApp(ctk.CTk):
                 "add_noise": self.noise_var.get() == "yes"
             }
 
+            # Robust Data Download for yfinance
             df = yf.download(ticker, period=f"{max(1, round(int(self.months_entry.get())/12))}y")
             if df.empty: raise Exception("No data found")
-            if isinstance(df.columns, pd.MultiIndex): df.columns = df.columns.get_level_values(0)
+            
+            # Handle MultiIndex columns (Common in newer yfinance versions)
+            if isinstance(df.columns, pd.MultiIndex): 
+                df.columns = df.columns.get_level_values(0)
+            
+            # Ensure we are extracting a single column cleanly
+            close_prices = df[['Close']].values
 
             scaler = MinMaxScaler(feature_range=(0, 1))
-            scaled_data = scaler.fit_transform(df[['Close']].values)
+            scaled_data = scaler.fit_transform(close_prices)
 
             X, y = [], []
             for i in range(params['lookback'], len(scaled_data)):
