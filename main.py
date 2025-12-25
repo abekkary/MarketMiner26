@@ -131,13 +131,11 @@ class SplashScreen(ctk.CTkToplevel):
         """Heavy imports performed in background to keep UI alive"""
         global MinMaxScaler, Sequential, LSTM, Dense, Input, LambdaCallback, EarlyStopping
         
-        # This is where the 5-10 second delay happens
         from sklearn.preprocessing import MinMaxScaler as MMS
         from tensorflow.keras.models import Sequential as Seq
         from tensorflow.keras.layers import LSTM as Lst, Dense as Den, Input as Inp
         from tensorflow.keras.callbacks import LambdaCallback as LCB, EarlyStopping as ES
         
-        # Assign to globals
         MinMaxScaler = MMS
         Sequential = Seq
         LSTM = Lst
@@ -154,9 +152,9 @@ class SplashScreen(ctk.CTkToplevel):
         while progress < 0.95:
             time.sleep(0.05)
             if self.ai_loaded:
-                progress += 0.05 # Speed up if done
+                progress += 0.05 
             else:
-                progress += 0.005 # Slow crawl if still loading TF
+                progress += 0.005 
             
             if progress > 0.4:
                 self.after(0, lambda: self.loading_label.configure(text="Loading TensorFlow & Scikit-Learn..."))
@@ -165,7 +163,6 @@ class SplashScreen(ctk.CTkToplevel):
                 
             self.after(0, lambda p=progress: self.load_bar.set(p))
 
-        # Wait for actual completion flag
         while not self.ai_loaded:
             time.sleep(0.1)
             
@@ -207,10 +204,18 @@ class StockForecasterApp(ctk.CTk):
         
         ctk.CTkLabel(self.sidebar, text="AI SETTINGS", font=("Inter", 20, "bold")).pack(pady=(30, 20))
 
-        self.ticker_entry = self.create_input("Ticker Symbol", "AAPL")
-        self.months_entry = self.create_input("Training Period (Months)", "60")
-        self.horizon_entry = self.create_input("Forecast Period (Months)", "24")
-        self.epochs_entry = self.create_input("AI Training Epochs", "50")
+        # Inputs with Help Text (Tooltips)
+        self.ticker_entry = self.create_input("Ticker Symbol", "AAPL", 
+            "Enter a stock (AAPL) or Crypto (BTC-USD) symbol from Yahoo Finance.")
+        
+        self.months_entry = self.create_input("Training Period (Months)", "60", 
+            "How many months of historical data the AI should study.")
+        
+        self.horizon_entry = self.create_input("Forecast Period (Months)", "24", 
+            "How many months into the future the AI should attempt to predict.")
+        
+        self.epochs_entry = self.create_input("AI Training Epochs", "50", 
+            "Number of times the AI scans the dataset. Higher = more detail, but slower.")
         
         self.lookback_entry = self.create_input(
             "Look-back Days", "60", 
@@ -218,21 +223,30 @@ class StockForecasterApp(ctk.CTk):
             command=self.draw_network_map
         )
         
-        self.val_split_entry = self.create_input("Validation Split % (Max 50)", "20")
+        self.val_split_entry = self.create_input("Validation Split % (Max 50)", "20", 
+            "Percentage of data kept hidden from the AI to test its accuracy.")
 
-        ctk.CTkLabel(self.sidebar, text="Model Complexity", font=("Inter", 12)).pack(pady=(10, 0))
+        # Manual Tooltips for Slider/Switch/Dropdown
+        comp_lbl = ctk.CTkLabel(self.sidebar, text="Model Complexity", font=("Inter", 12), cursor="question_arrow")
+        comp_lbl.pack(pady=(10, 0))
+        Tooltip(comp_lbl, "Increases the number of neurons and layers in the AI's 'brain'.")
+        
         self.complexity_var = ctk.IntVar(value=2)
         self.complexity_slider = ctk.CTkSlider(self.sidebar, from_=1, to=5, number_of_steps=4, 
-                                             variable=self.complexity_var, command=self.draw_network_map)
+                                              variable=self.complexity_var, command=self.draw_network_map)
         self.complexity_slider.pack(pady=5)
         self.input_widgets.append(self.complexity_slider)
 
         self.early_stop_var = ctk.BooleanVar(value=True)
         self.early_stop_switch = ctk.CTkSwitch(self.sidebar, text="Enable Early Stopping", variable=self.early_stop_var, font=("Inter", 12))
         self.early_stop_switch.pack(pady=(15, 5))
+        Tooltip(self.early_stop_switch, "Stops training automatically if the AI stops improving, saving time.")
         self.input_widgets.append(self.early_stop_switch)
 
-        ctk.CTkLabel(self.sidebar, text="Add Market Noise?", font=("Inter", 12)).pack(pady=(10, 0))
+        noise_lbl = ctk.CTkLabel(self.sidebar, text="Add Market Noise?", font=("Inter", 12), cursor="question_arrow")
+        noise_lbl.pack(pady=(10, 0))
+        Tooltip(noise_lbl, "Adds random volatility to the forecast to simulate real-world market chaos.")
+        
         self.noise_var = ctk.StringVar(value="yes")
         self.noise_dropdown = ctk.CTkComboBox(self.sidebar, values=["yes", "no"], variable=self.noise_var, width=180)
         self.noise_dropdown.pack(pady=5)
@@ -400,7 +414,6 @@ class StockForecasterApp(ctk.CTk):
             if df.empty: raise Exception("No data found")
             if isinstance(df.columns, pd.MultiIndex): df.columns = df.columns.get_level_values(0)
 
-            # Use the globally imported MinMaxScaler
             scaler = MinMaxScaler(feature_range=(0, 1))
             scaled_data = scaler.fit_transform(df[['Close']].values)
 
@@ -489,7 +502,10 @@ class StockForecasterApp(ctk.CTk):
         canvas1.draw()
         canvas1.get_tk_widget().pack(fill="both", expand=True)
 
-        fig_loss, ax2 = plt.subplots(figsize=(8, 5), facecolor='#1e293b')
+        # --- TRAINING METRICS TAB UPDATE ---
+        metrics_tab = self.tab_view.tab("Training Metrics")
+        
+        fig_loss, ax2 = plt.subplots(figsize=(8, 4), facecolor='#1e293b')
         ax2.set_facecolor('#1e293b')
         ax2.plot(history_dict['loss'], color='#f87171', label="Training Loss")
         if 'val_loss' in history_dict:
@@ -498,9 +514,28 @@ class StockForecasterApp(ctk.CTk):
         ax2.tick_params(colors='white')
         ax2.legend(facecolor='#1e293b', labelcolor='white')
 
-        canvas2 = FigureCanvasTkAgg(fig_loss, master=self.tab_view.tab("Training Metrics"))
+        canvas2 = FigureCanvasTkAgg(fig_loss, master=metrics_tab)
         canvas2.draw()
-        canvas2.get_tk_widget().pack(fill="both", expand=True)
+        canvas2.get_tk_widget().pack(fill="x", expand=False)
+
+        loss_summary_frame = ctk.CTkFrame(metrics_tab, fg_color="#0f172a", corner_radius=10)
+        loss_summary_frame.pack(fill="both", expand=True, pady=(10, 0), padx=10)
+
+        ctk.CTkLabel(loss_summary_frame, text="METRIC INTERPRETATION", font=("Inter", 14, "bold"), text_color="#f87171").pack(pady=(10, 5))
+
+        loss_text = (
+            "1. TRAINING LOSS (Red): Measures how well the AI is fitting the training data. "
+            "A downward curve indicates the model is successfully learning patterns.\n\n"
+            "2. VALIDATION LOSS (Blue): Measures performance on data the AI hasn't seen during training. "
+            "If this stays close to the red line, the model is generalizing well.\n\n"
+            "3. OVERFITTING WARNING: If the Blue line starts rising while the Red line falls, "
+            "the AI is 'memorizing' noise rather than learning trends. Lower epochs or complexity to fix."
+        )
+
+        loss_box = ctk.CTkTextbox(loss_summary_frame, font=("Inter", 12), fg_color="transparent", wrap="word", height=120)
+        loss_box.insert("0.0", loss_text)
+        loss_box.configure(state="disabled")
+        loss_box.pack(fill="both", expand=True, padx=15, pady=10)
 
     def save_chart(self):
         if not hasattr(self, 'current_fig'): return
