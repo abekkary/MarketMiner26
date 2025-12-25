@@ -2,17 +2,23 @@ import customtkinter as ctk
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Input
-from tensorflow.keras.callbacks import LambdaCallback, EarlyStopping
+# TensorFlow and Sklearn imports moved inside the class to allow for a loading screen
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import threading
 import time
-import os  # Added for path management
-from PIL import Image  # Added for high-res image scaling
+import os
+from PIL import Image
+
+# Global variables for the heavy libraries to be assigned after loading
+MinMaxScaler = None
+Sequential = None
+LSTM = None
+Dense = None
+Input = None
+LambdaCallback = None
+EarlyStopping = None
 
 # --- PATH CONFIGURATION ---
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -57,7 +63,6 @@ class SplashScreen(ctk.CTkToplevel):
         self.parent = parent
         self.title("Welcome to EagleFins Market Miner Professional 2026")
         
-        # INCREASED HEIGHT to 620 to ensure all text and the button fit
         self.geometry("600x620") 
         self.attributes("-topmost", True)
         self.overrideredirect(True) 
@@ -87,11 +92,9 @@ class SplashScreen(ctk.CTkToplevel):
                                         font=("Inter", 18, "bold"), text_color="#3b82f6")
         self.title_label.pack(pady=5)
 
-        # Disclaimer Box
         self.disclaimer_frame = ctk.CTkFrame(self, fg_color="#1e293b", corner_radius=10)
         self.disclaimer_frame.pack(fill="both", expand=True, padx=40, pady=15)
         
-        # UPDATED TEXT with explicit Yahoo Finance Line
         disclaimer_text = (
             "FINANCIAL DISCLAIMER:\n\n"
             "This application is for educational purposes only. "
@@ -107,7 +110,7 @@ class SplashScreen(ctk.CTkToplevel):
         self.disc_msg.pack(padx=20, pady=20, expand=True)
 
         # Loading Section
-        self.loading_label = ctk.CTkLabel(self, text="Loading Market Data...", font=("Inter", 12), text_color="#3b82f6")
+        self.loading_label = ctk.CTkLabel(self, text="Initializing AI Neural Workspace...", font=("Inter", 12), text_color="#3b82f6")
         self.loading_label.pack(pady=(0, 5))
 
         self.load_bar = ctk.CTkProgressBar(self, width=400, height=10)
@@ -119,20 +122,55 @@ class SplashScreen(ctk.CTkToplevel):
                                        fg_color="#3b82f6", hover_color="#2563eb",
                                        height=45, font=("Inter", 13, "bold"))
         
-        threading.Thread(target=self.simulate_loading, daemon=True).start()
+        # Start the background import process
+        self.ai_loaded = False
+        threading.Thread(target=self.load_ai_backend, daemon=True).start()
+        threading.Thread(target=self.animate_loading, daemon=True).start()
 
-    def simulate_loading(self):
-        steps = 100
-        for i in range(steps + 1):
-            time.sleep(0.02) 
-            progress = i / steps
-            self.after(0, lambda p=progress: self.load_bar.set(p))
+    def load_ai_backend(self):
+        """Heavy imports performed in background to keep UI alive"""
+        global MinMaxScaler, Sequential, LSTM, Dense, Input, LambdaCallback, EarlyStopping
+        
+        # This is where the 5-10 second delay happens
+        from sklearn.preprocessing import MinMaxScaler as MMS
+        from tensorflow.keras.models import Sequential as Seq
+        from tensorflow.keras.layers import LSTM as Lst, Dense as Den, Input as Inp
+        from tensorflow.keras.callbacks import LambdaCallback as LCB, EarlyStopping as ES
+        
+        # Assign to globals
+        MinMaxScaler = MMS
+        Sequential = Seq
+        LSTM = Lst
+        Dense = Den
+        Input = Inp
+        LambdaCallback = LCB
+        EarlyStopping = ES
+        
+        self.ai_loaded = True
+
+    def animate_loading(self):
+        """Simulate progress bar based on real AI loading state"""
+        progress = 0
+        while progress < 0.95:
+            time.sleep(0.05)
+            if self.ai_loaded:
+                progress += 0.05 # Speed up if done
+            else:
+                progress += 0.005 # Slow crawl if still loading TF
             
-            # Additional visual citation during loading
-            if i == 40:
-                self.after(0, lambda: self.loading_label.configure(text="Sourcing Data from Yahoo Finance..."))
-            elif i == 80:
+            if progress > 0.4:
+                self.after(0, lambda: self.loading_label.configure(text="Loading TensorFlow & Scikit-Learn..."))
+            if progress > 0.8:
                 self.after(0, lambda: self.loading_label.configure(text="Finalizing Neural Workspace..."))
+                
+            self.after(0, lambda p=progress: self.load_bar.set(p))
+
+        # Wait for actual completion flag
+        while not self.ai_loaded:
+            time.sleep(0.1)
+            
+        self.after(0, lambda: self.load_bar.set(1.0))
+        self.after(0, lambda: self.loading_label.configure(text="System Ready"))
         self.after(500, self.show_enter_button)
 
     def show_enter_button(self):
@@ -362,6 +400,7 @@ class StockForecasterApp(ctk.CTk):
             if df.empty: raise Exception("No data found")
             if isinstance(df.columns, pd.MultiIndex): df.columns = df.columns.get_level_values(0)
 
+            # Use the globally imported MinMaxScaler
             scaler = MinMaxScaler(feature_range=(0, 1))
             scaled_data = scaler.fit_transform(df[['Close']].values)
 
