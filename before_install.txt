@@ -1,0 +1,11 @@
+Market Miner Pro 2026 - Pre-Installation Notes
+
+Thank you for choosing Market Miner Pro 2026 by EagleFins. Please review the following before proceeding:
+
+System Requirements: A stable internet connection is required to fetch real-time market data.
+
+Antivirus & SmartScreen: Because this is an independently developed application, Windows SmartScreen may display a warning. To proceed, click "More Info" and then "Run Anyway."
+
+Data Source: This application uses Yahoo Finance for market data. Please ensure your network allows traffic to finance.yahoo.com.
+
+Permissions: It is recommended to install this application using Administrative privileges to ensure all shortcuts and registry entries are created correctly.

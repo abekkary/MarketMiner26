@@ -6,6 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
+inno_setup/
+
 # Distribution / packaging
 .Python
 build/
@@ -179,3 +181,11 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Inno Setup
+# Ignore the folder where the final Setup.exe is created
+/Output/
+# Ignore any temporary manifest files created during compilation
+Output-Manifest.txt
+# Ignore setup bin files if you use disk spanning
+setup-*.bin

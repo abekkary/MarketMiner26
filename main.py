@@ -134,11 +134,11 @@ class SplashScreen(ctk.CTkToplevel):
         self.load_bar.pack(pady=(0, 30))
 
         self.enter_btn = ctk.CTkButton(self, text="I Understand - Enter Application", 
-                                       command=self.close_splash, 
-                                       fg_color="#3b82f6", hover_color="#2563eb",
-                                       height=45, font=("Inter", 13, "bold"))
+                                        command=self.close_splash, 
+                                        fg_color="#3b82f6", hover_color="#2563eb",
+                                        height=45, font=("Inter", 13, "bold"))
         
-        # Start the background import process
+        # Start the background import process with daemon=True
         self.ai_loaded = False
         threading.Thread(target=self.load_ai_backend, daemon=True).start()
         threading.Thread(target=self.animate_loading, daemon=True).start()
@@ -202,6 +202,9 @@ class StockForecasterApp(ctk.CTk):
         
         self.title("EagleFins Market Miner Professional 2026")
         self.geometry("1200x900")
+
+        # FIX: Ensure application closes completely in Task Manager
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         try:
             icon_path = os.path.join(ASSETS_PATH, "icon.ico")
@@ -309,6 +312,11 @@ class StockForecasterApp(ctk.CTk):
         self.tab_view.add("Model Architecture")
 
         self.draw_network_map()
+
+    def on_closing(self):
+        """Ensures all background threads and the process terminate on close"""
+        self.destroy()
+        os._exit(0)
 
     def create_input(self, label, default, tip_text=None, command=None):
         lbl = ctk.CTkLabel(self.sidebar, text=label, font=("Inter", 12), cursor="question_arrow")
@@ -430,11 +438,10 @@ class StockForecasterApp(ctk.CTk):
             df = yf.download(ticker, period=f"{max(1, round(int(self.months_entry.get())/12))}y")
             if df.empty: raise Exception("No data found")
             
-            # Handle MultiIndex columns (Common in newer yfinance versions)
+            # Handle MultiIndex columns
             if isinstance(df.columns, pd.MultiIndex): 
                 df.columns = df.columns.get_level_values(0)
             
-            # Ensure we are extracting a single column cleanly
             close_prices = df[['Close']].values
 
             scaler = MinMaxScaler(feature_range=(0, 1))
@@ -525,9 +532,7 @@ class StockForecasterApp(ctk.CTk):
         canvas1.draw()
         canvas1.get_tk_widget().pack(fill="both", expand=True)
 
-        # --- TRAINING METRICS TAB UPDATE ---
         metrics_tab = self.tab_view.tab("Training Metrics")
-        
         fig_loss, ax2 = plt.subplots(figsize=(8, 4), facecolor='#1e293b')
         ax2.set_facecolor('#1e293b')
         ax2.plot(history_dict['loss'], color='#f87171', label="Training Loss")
@@ -547,12 +552,9 @@ class StockForecasterApp(ctk.CTk):
         ctk.CTkLabel(loss_summary_frame, text="METRIC INTERPRETATION", font=("Inter", 14, "bold"), text_color="#f87171").pack(pady=(10, 5))
 
         loss_text = (
-            "1. TRAINING LOSS (Red): Measures how well the AI is fitting the training data. "
-            "A downward curve indicates the model is successfully learning patterns.\n\n"
-            "2. VALIDATION LOSS (Blue): Measures performance on data the AI hasn't seen during training. "
-            "If this stays close to the red line, the model is generalizing well.\n\n"
-            "3. OVERFITTING WARNING: If the Blue line starts rising while the Red line falls, "
-            "the AI is 'memorizing' noise rather than learning trends. Lower epochs or complexity to fix."
+            "1. TRAINING LOSS (Red): Measures how well the AI is fitting the training data.\n\n"
+            "2. VALIDATION LOSS (Blue): Measures performance on unseen data.\n\n"
+            "3. OVERFITTING WARNING: If Blue rises while Red falls, the AI is memorizing noise."
         )
 
         loss_box = ctk.CTkTextbox(loss_summary_frame, font=("Inter", 12), fg_color="transparent", wrap="word", height=120)
@@ -561,14 +563,44 @@ class StockForecasterApp(ctk.CTk):
         loss_box.pack(fill="both", expand=True, padx=15, pady=10)
 
     def save_chart(self):
-        if not hasattr(self, 'current_fig'): return
-        file_path = ctk.filedialog.asksaveasfilename(defaultextension=".png", initialfile=f"Forecast_{self.ticker_entry.get().upper()}.png")
-        if file_path: self.current_fig.savefig(file_path, facecolor='#1e293b', bbox_inches='tight')
+        if not hasattr(self, 'current_fig') or self.current_fig is None:
+            self.status_lbl.configure(text="No chart to save. Run forecast first.", text_color="#f87171")
+            return
+            
+        file_path = ctk.filedialog.asksaveasfilename(
+            parent=self,
+            title="Export Forecast Chart",
+            defaultextension=".png", 
+            filetypes=[("PNG Image", "*.png"), ("All Files", "*.*")],
+            initialfile=f"Forecast_{self.ticker_entry.get().upper()}.png"
+        )
+        
+        if file_path:
+            try:
+                self.current_fig.savefig(file_path, facecolor='#1e293b', bbox_inches='tight', dpi=300)
+                self.status_lbl.configure(text="Chart saved successfully!", text_color="#4ade80")
+            except Exception as e:
+                self.status_lbl.configure(text=f"Save Error: {str(e)}", text_color="#f87171")
         
     def download_csv(self):
-        if self.current_forecast_df is None: return
-        file_path = ctk.filedialog.asksaveasfilename(defaultextension=".csv", initialfile=f"Forecast_{self.ticker_entry.get().upper()}.csv")
-        if file_path: self.current_forecast_df.to_csv(file_path, index=False)
+        if self.current_forecast_df is None:
+            self.status_lbl.configure(text="No data to export. Run forecast first.", text_color="#f87171")
+            return
+            
+        file_path = ctk.filedialog.asksaveasfilename(
+            parent=self,
+            title="Export Forecast CSV",
+            defaultextension=".csv", 
+            filetypes=[("CSV File", "*.csv"), ("All Files", "*.*")],
+            initialfile=f"Forecast_{self.ticker_entry.get().upper()}.csv"
+        )
+        
+        if file_path:
+            try:
+                self.current_forecast_df.to_csv(file_path, index=False)
+                self.status_lbl.configure(text="CSV data exported!", text_color="#4ade80")
+            except Exception as e:
+                self.status_lbl.configure(text=f"Export Error: {str(e)}", text_color="#f87171")
 
 if __name__ == "__main__":
     app = StockForecasterApp()

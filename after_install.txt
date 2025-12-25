@@ -1,0 +1,15 @@
+Market Miner Pro 2026 - Installation Complete
+
+Installation was successful! You are now ready to use Market Miner Pro 2026.
+
+Quick Start Guide:
+
+Initial Launch: The very first time you open the app, it may take 10–20 seconds to initialize. This is normal as the AI and data processing components are being prepared.
+
+Searching: Enter any valid stock ticker (e.g., AAPL, TSLA, NVDA) in the search bar.
+
+Mining: Click the "Mine Data" button to begin the analysis.
+
+Technical Support: If you encounter any issues or have feedback, please visit our official GitHub repository or contact the EagleFins development team.
+
+Happy Mining!
