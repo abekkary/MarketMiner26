@@ -26,7 +26,7 @@ Click the button below to download the latest Windows Installer:
 
 # 🚀 Market Miner Pro 2026 — Initial Release (v1.0.0)
 
-We are excited to launch the first official version of **Market Miner Pro 2026**! Developed by EagleFins, this application is designed to bridge the gap between complex financial data and actionable insights for retail investors.
+We are excited to launch the first official version of **Market Miner Pro 2026**! This application is designed to bridge the gap between complex financial data and actionable insights for retail investors.
 
 ---
 
