@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/badge/Release-v1.0.0-blue?style=for-the-badge)](https://github.com/abekkary/MarketMiner26/releases/latest)
 [![Python](https://img.shields.io/badge/Python-3.12.9-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![License](https://img.shields.io/badge/License-EagleFins-green?style=for-the-badge)](https://github.com/abekkary/MarketMiner26/blob/main/license.txt)
+[![License](https://img.shields.io/badge/License-EagleFins-green?style=for-the-badge)](https://github.com/abekkary/MarketMiner26/blob/main/LICENSE.md)
 
 ---
 
