@@ -55,7 +55,9 @@ The application is built on **Python 3.12.9** for peak performance and modern sy
 * **PySide6 / PyQt6:** Provides the sleek, modern Graphical User Interface (GUI).
 
 ---
-
+## 💻 System Requirements
+* **Operating System:** Windows 10 or 11 (64-bit)
+* **Note for Mac/Linux Users:** Currently, only a Windows installer is provided. Support for macOS is on our future roadmap.
 ### 🛠️ Installation Guide
 
 1. **Download:** Grab the `MarketMiner_Pro_2026_Setup.exe` from the button above or the **Assets** section in the sidebar.
