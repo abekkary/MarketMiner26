@@ -1,9 +1,19 @@
 # Market Miner Pro 2026
 
-[![Release](https://img.shields.io/badge/Release-v1.0.0-blue?style=for-the-badge)](https://github.com/abekkary/MarketMiner26/releases/latest)
-[![Python](https://img.shields.io/badge/Python-3.12.9-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![License](https://img.shields.io/badge/License-EagleFins-green?style=for-the-badge)](https://github.com/abekkary/MarketMiner26/blob/main/LICENSE.md)
+<p align="left">
+  <a href="https://github.com/abekkary/MarketMiner26/releases/latest">
+    <img src="https://img.shields.io/badge/Release-v1.0.0-blue?style=for-the-badge" alt="Release">
+  </a>
+  <a href="https://www.python.org/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.12.9-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  </a>
+  <a href="https://www.tensorflow.org/" target="_blank">
+    <img src="https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow">
+  </a>
+  <a href="https://github.com/abekkary/MarketMiner26/blob/main/LICENSE.md">
+    <img src="https://img.shields.io/badge/License-EagleFins-green?style=for-the-badge" alt="License">
+  </a>
+</p>
 
 ---
 
@@ -23,15 +33,15 @@ We are excited to launch the first official version of **Market Miner Pro 2026**
 ### 💎 Key Features
 
 * **Deep Market Data Mining**
-    Seamlessly fetch comprehensive historical and real-time financial data via the **Yahoo Finance API**. Market Miner Pro doesn't just pull prices; it "mines" across multiple data points to give you a complete picture of a ticker's performance.
+  Seamlessly fetch comprehensive historical and real-time financial data via the **Yahoo Finance API**. Market Miner Pro doesn't just pull prices; it "mines" across multiple data points to give you a complete picture of a ticker's performance.
 
 * **AI-Powered Trend Analysis (TensorFlow)**
-    At the heart of Market Miner is a custom **TensorFlow** engine. TensorFlow is an industry-leading machine learning platform that allows the app to process vast amounts of historical data through a **Neural Network**.
-    * **Predictive Modeling:** Utilizes Long Short-Term Memory (LSTM) layers to identify complex temporal patterns in stock price movements.
-    * **Data-Driven Insights:** Unlike simple moving averages, our AI looks for non-linear relationships in market volatility to help forecast potential trend shifts.
+  At the heart of Market Miner is a custom **TensorFlow** engine. TensorFlow is an industry-leading machine learning platform that allows the app to process vast amounts of historical data through a **Neural Network**.
+  * **Predictive Modeling:** Utilizes Long Short-Term Memory (LSTM) layers to identify complex temporal patterns in stock price movements.
+  * **Data-Driven Insights:** Unlike simple moving averages, our AI looks for non-linear relationships in market volatility to help forecast potential trend shifts.
 
 * **Ultra-Lightweight & Secure Installer**
-    Experience a "zero-dependency" setup. The standalone Windows installer packages all necessary libraries into a single, optimized environment.
+  Experience a "zero-dependency" setup. The standalone Windows installer packages all necessary libraries into a single, optimized environment.
 
 ---
 
@@ -48,16 +58,12 @@ The application is built on **Python 3.12.9** for peak performance and modern sy
 
 ### 🛠️ Installation Guide
 
-1.  **Download:** Grab the `MarketMiner_Pro_2026_Setup.exe` from the **Assets** section below.
-2.  **Run Setup:** Open the installer. 
-    * *Note:* As an independent developer, you may see a "Windows protected your PC" popup. Click **More Info** then **Run Anyway** to proceed.
-3.  **Launch:** Once finished, use the **EagleFins** desktop shortcut to start your first mining session.
+1. **Download:** Grab the `MarketMiner_Pro_2026_Setup.exe` from the button above or the **Assets** section in the sidebar.
+2. **Run Setup:** Open the installer.  
+   * *Note:* As an independent developer, you may see a "Windows protected your PC" popup. Click **More Info** then **Run Anyway** to proceed.
+3. **Launch:** Once finished, use the **EagleFins** desktop shortcut to start your first mining session.
 
 ---
-
-### 📦 Assets
-* **MarketMiner_Pro_2026_Setup.exe** (Main Installer)
-* **Source code** (zip/tar.gz)
 
 ## ⚠️ Disclaimer
 
@@ -66,6 +72,6 @@ The application is built on **Python 3.12.9** for peak performance and modern sy
 * **Not Financial Advice:** The information, analysis, and AI-generated trends provided by this application do not constitute investment, financial, or trading advice. Users should consult with a qualified financial professional before making any investment decisions.
 * **Accuracy of Data:** While this app utilizes the Yahoo Finance API, EagleFins cannot guarantee the absolute accuracy, completeness, or timeliness of the market data provided.
 * **AI Limitations:** The TensorFlow-powered trend analysis is based on historical data patterns. Past performance is not an indicator of future results. AI models can produce "hallucinations" or incorrect predictions based on market anomalies, black swan events, or volatility.
-* **Risk of Loss:** Trading stocks and securities involves significant risk. You are solely responsible for any financial gains or losses incurred while using this software!
+* **Risk of Loss:** Trading stocks and securities involves significant risk. You are solely responsible for any financial gains or losses incurred while using this software.
 
 ---
