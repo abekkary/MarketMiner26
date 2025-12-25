@@ -20,7 +20,7 @@
 ## 📥 Quick Download
 Click the button below to download the latest Windows Installer:
 
-[![Download Market Miner Pro](https://img.shields.io/badge/Download-Market_Miner_Pro_v1.0.0-success?style=for-the-badge&logo=windows)](https://github.com/abekkary/MarketMiner26/releases/download/v1.0.0/MarketMiner_Pro_2026_Setup.exe)
+[![Download Market Miner Pro 26](https://img.shields.io/badge/Download-Market_Miner_Pro_v1.0.0-success?style=for-the-badge&logo=windows)](https://github.com/abekkary/MarketMiner26/releases/download/v1.0.0/MarketMiner_Pro_2026_Setup.exe)
 
 ---
 
